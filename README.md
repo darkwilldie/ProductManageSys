@@ -12,7 +12,7 @@
 - ✅ **商品详情**: 查看商品的完整信息
 - ✅ **批量操作**: 多选商品批量删除
 - ✅ **数据导出**: 支持导出选中商品或全部商品为Excel文件
-- ✅ **分类管理**: 商品分类支持
+- ✅ **分类管理**: 商品分类及管理支持
 
 ## 技术栈
 
@@ -28,7 +28,7 @@
 
 - JDK 25
 - SQL Server (本地实例)
-- Maven 3.x
+- Maven 3
 
 ## 数据库配置
 
@@ -38,9 +38,9 @@
 CREATE DATABASE ProductManageSys;
 ```
 
-2. 运行DDL.sql文件创建表结构（可选，项目会自动创建表）
+2. 运行SQL/目录内.sql文件创建表并添加示例数据
 
-3. 在 `application.properties` 中配置数据库连接:
+3. 在 `application.properties` 中配置数据库连接示例（需要根据实际名称修改）:
 
 ```properties
 spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=ProductManageSys;integratedSecurity=true;encrypt=true;trustServerCertificate=true;
@@ -48,19 +48,7 @@ spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=ProductManage
 
 ## 运行项目
 
-### 方式1: 使用Maven
-
-```bash
-# Windows
-mvnw.cmd spring-boot:run
-
-# Linux/Mac
-./mvnw spring-boot:run
-```
-
-### 方式2: 使用IDE
-
-直接运行 `ProductManageSysApplication.java` 主类
+在Windows下运行批处理文件 `start.bat`
 
 ## 访问系统
 
@@ -113,8 +101,9 @@ src/main/resources/
 
 ### 2. 商品列表页面
 - 显示所有商品的ID、名称、分类、价格、库存
+- 管理商品分类
 - 支持全选/单选商品
-- 批量删除选中的商品
+- 删除或批量删除选中的商品
 - 导出选中商品或全部商品为Excel文件
 - 点击商品名称查看详情
 
@@ -154,15 +143,7 @@ mvnw clean install
 ```
 
 ### 3. 端口占用
-修改 `application.properties` 中的端口:
+首先尝试关闭占用端口的实例，如果不行，修改 `application.properties` 中的端口:
 ```properties
 server.port=8081
 ```
-
-## 开发者
-
-- GitHub: qrliu
-
-## 许可证
-
-MIT License
