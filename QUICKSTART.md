@@ -10,7 +10,7 @@
 CREATE DATABASE ProductManageSys;
 ```
 
-4. (可选) 运行DDL.sql文件创建表结构。或者让Spring Boot自动创建表。
+4. 运行 `SQL/` 内的文件创建表结构。
 
 ## 第二步：检查配置
 

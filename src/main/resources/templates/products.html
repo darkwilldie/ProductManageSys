@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <title>商品列表 - 商品管理系统</title>
     <style>
         * {
@@ -295,6 +297,17 @@
             form.method = 'POST';
             form.action = '/products/delete-batch';
 
+            // Add CSRF token
+            const csrfToken = document.querySelector('meta[name="_csrf"]');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
+            if (csrfToken && csrfHeader) {
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_csrf';
+                tokenInput.value = csrfToken.getAttribute('content');
+                form.appendChild(tokenInput);
+            }
+
             ids.forEach(id => {
                 const input = document.createElement('input');
                 input.type = 'hidden';
@@ -318,6 +331,17 @@
             form.method = 'POST';
             form.action = '/products/export';
 
+            // Add CSRF token
+            const csrfToken = document.querySelector('meta[name="_csrf"]');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
+            if (csrfToken && csrfHeader) {
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_csrf';
+                tokenInput.value = csrfToken.getAttribute('content');
+                form.appendChild(tokenInput);
+            }
+
             ids.forEach(id => {
                 const input = document.createElement('input');
                 input.type = 'hidden';
@@ -334,6 +358,18 @@
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '/products/export';
+
+            // Add CSRF token
+            const csrfToken = document.querySelector('meta[name="_csrf"]');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
+            if (csrfToken && csrfHeader) {
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_csrf';
+                tokenInput.value = csrfToken.getAttribute('content');
+                form.appendChild(tokenInput);
+            }
+
             document.body.appendChild(form);
             form.submit();
         }

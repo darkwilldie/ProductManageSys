@@ -1,9 +1,9 @@
 package com.qrliu.ProductManageSys.service;
 
-import com.qrliu.ProductManageSys.entity.Category;
-import com.qrliu.ProductManageSys.entity.Product;
-import com.qrliu.ProductManageSys.repository.CategoryRepository;
-import com.qrliu.ProductManageSys.repository.ProductRepository;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -12,9 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
+import com.qrliu.ProductManageSys.entity.Category;
+import com.qrliu.ProductManageSys.entity.Product;
+import com.qrliu.ProductManageSys.repository.CategoryRepository;
+import com.qrliu.ProductManageSys.repository.ProductRepository;
 
 @Service
 public class ProductService {
@@ -84,11 +85,11 @@ public class ProductService {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(product.getId());
             row.createCell(1).setCellValue(product.getName());
-            row.createCell(2).setCellValue(product.getCategory().getName());
-            row.createCell(3).setCellValue(product.getDescription());
-            row.createCell(4).setCellValue(product.getPrice().doubleValue());
-            row.createCell(5).setCellValue(product.getStockQuantity());
-            row.createCell(6).setCellValue(product.getCreatedAt().toString());
+            row.createCell(2).setCellValue(product.getCategory() != null ? product.getCategory().getName() : "");
+            row.createCell(3).setCellValue(product.getDescription() != null ? product.getDescription() : "");
+            row.createCell(4).setCellValue(product.getPrice() != null ? product.getPrice().doubleValue() : 0.0);
+            row.createCell(5).setCellValue(product.getStockQuantity() != null ? product.getStockQuantity() : 0);
+            row.createCell(6).setCellValue(product.getCreatedAt() != null ? product.getCreatedAt().toString() : "");
         }
 
         // 自动调整列宽
