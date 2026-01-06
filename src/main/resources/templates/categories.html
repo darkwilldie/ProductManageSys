@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>分类列表 - 商品管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/categories.css}">
+</head>
+
+<body>
+    <div class="header">
+        <h1>商品管理系统 - 分类管理</h1>
+        <div class="user-info">
+            <span sec:authentication="name">用户</span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="logout-btn">退出登录</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="nav-links">
+            <a th:href="@{/products}" class="btn btn-secondary">返回商品列表</a>
+        </div>
+
+        <div class="toolbar">
+            <div class="btn-group">
+                <a th:href="@{/categories/new}" class="btn btn-primary">新增分类</a>
+            </div>
+        </div>
+
+        <div th:if="${categories.isEmpty()}" class="empty-state">
+            <h3>暂无分类</h3>
+            <p>点击上方"新增分类"按钮添加第一个分类</p>
+        </div>
+
+        <table th:if="${!categories.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>分类名称</th>
+                    <th>描述</th>
+                    <th>商品数量</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.id}"></td>
+                    <td>
+                        <span class="category-name" th:text="${category.name}"></span>
+                    </td>
+                    <td th:text="${category.description != null ? category.description : '暂无描述'}"></td>
+                    <td th:text="${category.products != null ? category.products.size() : 0}"></td>
+                    <td class="actions">
+                        <a th:href="@{/categories/edit/{id}(id=${category.id})}" class="btn btn-primary btn-sm">编辑</a>
+                        <form th:action="@{/categories/delete/{id}(id=${category.id})}" method="post"
+                            style="display:inline;" onsubmit="return confirm('确定要删除这个分类吗？如果该分类下有商品将无法删除。');">
+                            <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

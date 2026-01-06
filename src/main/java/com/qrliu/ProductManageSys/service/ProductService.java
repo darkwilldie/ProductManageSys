@@ -58,6 +58,19 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("分类不存在"));
     }
 
+    public Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Transactional
+    public void deleteCategory(Integer id) {
+        Category category = getCategoryById(id);
+        if (category.getProducts() != null && !category.getProducts().isEmpty()) {
+            throw new RuntimeException("该分类下还有商品，无法删除");
+        }
+        categoryRepository.deleteById(id);
+    }
+
     public byte[] exportProductsToExcel(List<Integer> productIds) throws IOException {
         List<Product> products;
         if (productIds == null || productIds.isEmpty()) {

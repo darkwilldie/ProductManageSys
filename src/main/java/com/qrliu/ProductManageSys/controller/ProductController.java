@@ -112,7 +112,9 @@ public class ProductController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "products.xlsx");
+            // Use proper encoding for Chinese filename support
+            String filename = "商品列表_" + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
+            headers.setContentDispositionFormData("attachment", new String(filename.getBytes("UTF-8"), "ISO-8859-1"));
 
             return ResponseEntity.ok()
                     .headers(headers)

@@ -4,150 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <title th:text="${product.id != null ? '编辑商品' : '新增商品'}">商品表单</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-        }
-
-        .header {
-            background: #667eea;
-            color: white;
-            padding: 15px 30px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            font-size: 24px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .form-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-
-        .form-title {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        label .required {
-            color: #e74c3c;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-actions {
-            margin-top: 30px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-        }
-
-        .help-text {
-            font-size: 12px;
-            color: #999;
-            margin-top: 5px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/product-form.css}">
 </head>
 
 <body>
@@ -175,12 +36,17 @@
                     <label for="categoryId">
                         商品分类 <span class="required">*</span>
                     </label>
-                    <select id="categoryId" name="categoryId" required>
-                        <option value="">请选择分类</option>
-                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
-                            th:selected="${product.category != null && product.category.id == category.id}">
-                        </option>
-                    </select>
+                    <div class="category-select-wrapper">
+                        <select id="categoryId" name="categoryId" required>
+                            <option value="">请选择分类</option>
+                            <option th:each="category : ${categories}" th:value="${category.id}"
+                                th:text="${category.name}"
+                                th:selected="${product.category != null && product.category.id == category.id}">
+                            </option>
+                        </select>
+                        <button type="button" class="btn btn-info btn-sm" onclick="showNewCategoryModal()">+
+                            新建分类</button>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -218,6 +84,104 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal for new category -->
+    <div id="newCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新建分类</h3>
+                <button type="button" class="modal-close" onclick="hideNewCategoryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newCategoryName">
+                        分类名称 <span class="required">*</span>
+                    </label>
+                    <input type="text" id="newCategoryName" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="newCategoryDescription">
+                        分类描述
+                    </label>
+                    <textarea id="newCategoryDescription" maxlength="255"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideNewCategoryModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createNewCategory()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showNewCategoryModal() {
+            document.getElementById('newCategoryModal').classList.add('show');
+        }
+
+        function hideNewCategoryModal() {
+            document.getElementById('newCategoryModal').classList.remove('show');
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('newCategoryDescription').value = '';
+        }
+
+        function createNewCategory() {
+            const name = document.getElementById('newCategoryName').value.trim();
+            const description = document.getElementById('newCategoryDescription').value.trim();
+
+            if (!name) {
+                alert('请输入分类名称');
+                return;
+            }
+
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="_csrf"]');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('description', description);
+            if (csrfToken && csrfHeader) {
+                formData.append('_csrf', csrfToken.getAttribute('content'));
+            }
+
+            fetch('/categories/quick-add', {
+                method: 'POST',
+                headers: csrfHeader && csrfToken ? {
+                    [csrfHeader.getAttribute('content')]: csrfToken.getAttribute('content')
+                } : {},
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.json();
+                })
+                .then(category => {
+                    // Add new category to select
+                    const select = document.getElementById('categoryId');
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.text = category.name;
+                    option.selected = true;
+                    select.appendChild(option);
+
+                    hideNewCategoryModal();
+                    alert('分类创建成功！');
+                })
+                .catch(error => {
+                    alert('创建失败：' + error.message);
+                });
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('newCategoryModal');
+            if (event.target === modal) {
+                hideNewCategoryModal();
+            }
+        }
+    </script>
 </body>
 
 </html>
